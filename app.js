@@ -106,6 +106,40 @@ app.delete('/tasklists/:tasklistId', (req, res)=>{
     .catch((error)=>{console.log(error)}); 
 });
 
+/*CRUD operation for task, a task should always belong to a 'taskList */
+//Get all tasks for 1 taskList URl, //http://localhost:3000/tasklists/:tasklistId/tasks
+app.get('/tasklists/:tasklistId/tasks', (req, res)=>{
+    Task.find({ _taskListId:  req.params.tasklistId })
+    .then((tasks)=>{
+        res.status(200).send(tasks)
+    })
+    .catch((error)=>{console.log(error)}); 
+});
+
+// Create task inside a particular Task list
+app.post('/tasklists/:tasklistId/tasks', (req, res)=> {
+    console.log(req, res);
+let taskObj = { 'title': req.body.title, '_taskListId': req.params.tasklistId};
+console.log(req.body);
+   Task(taskObj).save()
+        .then((task) => {
+            res.status(201).send(task);
+        })
+        .catch((error) => {
+            res.status(500);
+            console.log(error) });
+   });
+
+// Get one task lfor 1 task list URL http://localhost:3000/tasklists/:tasklistId/tasks/:taskId
+// Get one task inside a TaskList
+app.get('/tasklists/:tasklistId/tasks/:taskId', (req, res)=>{
+    Task.find({ _taskListId:  req.params.tasklistId, _id: req.params.taskId})
+    .then((task)=>{
+        res.status(200).send(task)
+    })
+    .catch((error)=>{console.log(error)}); 
+});
+
 app.listen(3000, () => {
     console.log("Server started on port 3000 Nice");
 });
